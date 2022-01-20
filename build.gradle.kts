@@ -8,6 +8,10 @@ plugins {
 	kotlin("plugin.spring") version "1.6.10"
 }
 
+springBoot {
+	mainClass.set("pl.achmielecki.notepad.NotepadApplication")
+}
+
 group = "pl.achmielecki"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
