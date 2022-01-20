@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+	id("java")
 	id("org.springframework.boot") version "2.6.2"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.6.10"
@@ -37,4 +38,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+	manifest {
+		attributes["Main-Class"] = "pl.achmielecki.notepad.NotepadApplication"
+	}
 }

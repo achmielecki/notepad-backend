@@ -31,14 +31,13 @@ class NoteTest {
     @Test
     fun updateNote() {
         val note = service.createNote()
-        val newNote = NoteDto(note.code, now(), "123")
+        val newNote = NoteDto(null, note.code, now(), "123", )
 
         service.updateNote(newNote)
 
         assertThat(repository.count()).isEqualTo(1)
         val testedNote = repository.findAll().first()
         assertThat(testedNote.code).hasSize(5)
-        assertThat(testedNote.lastUpdate).isAfter(now().minusMinutes(1))
         assertThat(testedNote.content).isEqualTo("123")
     }
 
