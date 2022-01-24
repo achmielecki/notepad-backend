@@ -7,8 +7,8 @@ import java.time.LocalDateTime.now
 
 @Service
 class NoteService(
-    val repository: NoteRepository,
-    val codeGenerator: CodeGenerator
+    private val repository: NoteRepository,
+    private val codeGenerator: CodeGenerator
 ) {
 
     fun createNote() =
