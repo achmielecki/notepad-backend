@@ -7,5 +7,3 @@ services:
     container_name: notepad-backend
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
-    networks:
-      - app-network
