@@ -9,7 +9,3 @@ services:
       SPRING_PROFILES_ACTIVE: "prod"
     networks:
       - app-network
-
-networks:
-  app-network:
-    driver: bridge
