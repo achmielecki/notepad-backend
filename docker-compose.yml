@@ -6,4 +6,5 @@ services:
       - "8080:8080"
     container_name: notepad-backend
     environment:
+      spring.data.mongodb.uri: "mongodb+srv://notepad_backend:PVIoRL7ETnfXwjO0@cluster0.be6mz.mongodb.net/notepad?retryWrites=true&w=majority"
       SPRING_PROFILES_ACTIVE: "prod"
