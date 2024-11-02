@@ -9,6 +9,9 @@ data class NoteDto(
     val lastUpdate: LocalDateTime?,
     val content: String
 ) {
+    constructor()
+            : this(null, "", null, "")
+
     constructor(note: Note)
             : this(null, note.code, note.lastUpdate, note.content)
 
