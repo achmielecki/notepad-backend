@@ -10,21 +10,8 @@ import java.util.*
 import java.util.function.Function
 import kotlin.collections.HashMap
 
-open class FakeMongoImpl<T> : MongoRepository<T, String> {
+open class FakeMongoImpl<T : Any> : MongoRepository<T, String> {
     private val map = HashMap<String, T>()
-
-    override fun <S : T> save(entity: S): S {
-        var id = getId(entity)
-        if (getId(entity) != null){
-            map[id!!] = entity
-            return map[id] as S
-        } else {
-            id = map.count().toString()
-            setId(entity, id)
-            map[id] = entity
-            return map[id] as S
-        }
-    }
 
     private fun getId(entity: T): String? {
         val field = entity!!::class.java.declaredFields
@@ -41,13 +28,26 @@ open class FakeMongoImpl<T> : MongoRepository<T, String> {
     }
 
     override fun <S : T> saveAll(entities: MutableIterable<S>): MutableList<S> =
-        entities.map { save(it) }.toMutableList()
+        entities.map { save(it!!) }.toMutableList()
 
     override fun findById(id: String): Optional<T> =
-        Optional.ofNullable(map[id])
+        Optional.ofNullable(map[id] as T)
 
     override fun existsById(id: String): Boolean =
         findById(id).isPresent
+
+    override fun <S : T> save(entity: S): S {
+        var id = getId(entity)
+        if (getId(entity) != null){
+            map[id!!] = entity
+            return map[id] as S
+        } else {
+            id = map.count().toString()
+            setId(entity, id)
+            map[id] = entity
+            return map[id] as S
+        }
+    }
 
     override fun findAll(): MutableList<T> =
         map.values.toMutableList()
@@ -67,11 +67,15 @@ open class FakeMongoImpl<T> : MongoRepository<T, String> {
     override fun <S : T> findAll(example: Example<S>, pageable: Pageable): Page<S> =
         throw NotImplementedError()
 
-    override fun findAllById(ids: MutableIterable<String>): MutableIterable<T> =
+    override fun findAllById(ids: MutableIterable<String>): MutableList<T> =
         throw NotImplementedError()
 
     override fun count(): Long =
         map.count().toLong()
+
+    override fun delete(entity: T) {
+        throw NotImplementedError()
+    }
 
     override fun <S : T> count(example: Example<S>): Long =
         throw NotImplementedError()
@@ -79,9 +83,6 @@ open class FakeMongoImpl<T> : MongoRepository<T, String> {
     override fun deleteById(id: String) {
         map.remove(id)
     }
-
-    override fun delete(entity: T) =
-        throw NotImplementedError()
 
     override fun deleteAllById(ids: MutableIterable<String>) {
         ids.map { deleteById(it) }.toMutableList()
@@ -94,6 +95,10 @@ open class FakeMongoImpl<T> : MongoRepository<T, String> {
         map.clear()
     }
 
+    override fun <S : T> insert(entity: S): S {
+        return save(entity)
+    }
+
     override fun <S : T> findOne(example: Example<S>): Optional<S> =
         throw NotImplementedError()
 
@@ -103,10 +108,7 @@ open class FakeMongoImpl<T> : MongoRepository<T, String> {
     override fun <S : T, R : Any?> findBy(
         example: Example<S>,
         queryFunction: Function<FluentQuery.FetchableFluentQuery<S>, R>
-    ): R = throw NotImplementedError()
-
-    override fun <S : T> insert(entity: S): S =
-        save(entity)
+    ): R & Any = throw NotImplementedError()
 
     override fun <S : T> insert(entities: MutableIterable<S>): MutableList<S> =
         saveAll(entities)
